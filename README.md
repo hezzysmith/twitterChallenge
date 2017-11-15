@@ -1,7 +1,6 @@
 # twitterChallenge
 Salesforce Twitter Challenge
 
-
 # To start the Backend server
 ```
 cd server
@@ -18,3 +17,5 @@ http-server
 
 open http://localhost:8081/
 ```
+
+![alt text](https://github.com/hezzysmith/twitterChallenge/blob/master/screen.png?raw=true)
