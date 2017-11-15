@@ -5,6 +5,7 @@ Salesforce Twitter Challenge
 # To start the Backend server
 ```
 cd server
+export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
 ./mvnw spring-boot:run -e
 ```
 
