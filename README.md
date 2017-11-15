@@ -14,4 +14,6 @@ cd client
 
 /* install http-server  (https://github.com/indexzero/http-server) */ 
 http-server
+
+open http://localhost:8081/
 ```
