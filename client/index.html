@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Salesforce Tweet Challenge</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script> 
+    <script type="text/javascript">
+        
+        $(document).ready(function(){
+
+            var tweet_url = "http://localhost:8080/tweets";
+            var ONE_MINUTE = 60000;
+            var results = [];
+            var searchInput = "";
+
+            // search handler    
+            $('#searchButton').on('click', function () {
+                searchInput = $('#search').val();
+                renderTweets(searchInput);
+            });
+
+            // fetch tweets
+            function getTweets(query) {
+
+                // show loading indicator
+                $('#getResultDiv .list-group').html("Loading ... ");
+
+                $.get(tweet_url, function(data, status){
+                    results = data;
+                    renderTweets(query);
+                });
+            }
+
+            // render media
+
+            function renderMedia(m) {
+                if (m.length > 0) {
+                    var res = "<br>";
+                    $.each(m, function(i, media) {
+                        res = res + "<img style='width:100%' src='"+media.mediaURL+"' /><br>";
+                    });
+                    return res;
+                } //else {
+                   // return " ";
+                //}
+            }
+
+            // render tweet
+            function renderTweet(tweet) {
+
+                var dateTweet = new Date(tweet.createdAt);
+                return "<div class='card' style='margin-bottom:20px'><div class='card-header'><img style='float:left; margin-right:10px' src=" + tweet.user.profileImageURL + "><div style='float:left'>" + tweet.user.name 
+                    + "<br>@" + tweet.user.screenName
+                    + "</div></div>" 
+                    + "<div class='card-body'>"+  tweet.text + renderMedia(tweet.mediaEntities) +
+                   // + "<br><br><small style='margin-top:10px'>Retweeted: " + tweet.retweetCount
+                    + "<br><small style='margin-top:10px'>Date: " + dateTweet
+                    + "<br><small style='margin-top:10px'>Retweeted: " + tweet.retweetCount
+                    +  "</small></div></div>";
+            }
+
+            // render tweets
+            function renderTweets(query) {
+                
+                // clear results
+                $('#getResultDiv ul').empty();
+
+                // iterate through tweets
+                $.each(results, function(i, twitterStatus){
+                    if (query == null || twitterStatus.text.includes(query)) {
+                        $('#getResultDiv .list-group').append(renderTweet(twitterStatus));
+                    }
+                });
+            }
+
+            // load tweets
+            getTweets(null); 
+
+            // load tweets at one minute intervals
+            setTimeout(getTweets(searchInput), ONE_MINUTE);           
+            
+        });
+    </script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+        
+        <div class="col-md-12">   
+        <h2>Salesforce Twitter Challenge</h2>
+    <small>Last 10 Tweets</small>
+   </div>
+   </div>
+    <div class="row">
+        <div class="col-lg-6">
+    <div class="input-group">
+      <input id="search" type="text" class="form-control" placeholder="Search for..." aria-label="Search for...">
+      <span class="input-group-btn">
+        <button id="searchButton" class="btn btn-secondary" type="button">Go!</button>
+      </span>
+    </div>
+  </div>
+
+    </div>
+    <div class="row">
+    <div class="col-sm-7" style="margin:20px 0px 20px 0px">
+        
+        <div id="getResultDiv" style="padding:20px 10px 20px 50px">
+            <ul class="list-group">
+            </ul>
+        </div>
+    </div>
+    </div>
+    </div>
+</body>
+</html>  
